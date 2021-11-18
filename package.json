@@ -1,0 +1,11 @@
+{
+  "name": "cooklang-ts",
+  "version": "0.0.1",
+  "description": "CookLang parsing in TypeScript",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "death_au",
+  "license": "MIT"
+}
