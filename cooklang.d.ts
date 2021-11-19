@@ -1,10 +1,10 @@
 // a base class containing the raw string
 export class base {
   /** @public */
-  raw: string
+  raw?: string
 
   /** @public */
-  constructor(s: string | string[])
+  constructor(s?: string | string[] | any)
 }
 
 export class Recipe extends base {

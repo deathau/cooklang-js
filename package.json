@@ -1,16 +1,20 @@
 {
   "name": "cooklang-js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "CookLang parsing in TypeScript",
-  "main": "index.js",
+  "main": "dist/cooklang.js",
   "types": "cooklang.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx jest --verbose --",
+    "test:watch": "npx jest jest --watch --",
+    "coverage": "npx jest --collectCoverage --"
   },
   "author": "death_au",
   "license": "MIT",
   "devDependencies": {
+    "@types/jest": "^27.0.3",
+    "ts-jest": "^27.0.7",
     "typescript": "^4.5.2"
   }
 }
