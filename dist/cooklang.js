@@ -56,8 +56,14 @@ class Step extends base {
     constructor(s) {
         super(s);
         this.line = [];
-        if (s)
+        if (s && typeof s === 'string')
             this.line = this.parseLine(s);
+        else if (s) {
+            if ('line' in s)
+                this.line = s.line;
+            if ('image' in s)
+                this.image = s.image;
+        }
     }
     // parse a single line
     parseLine(s) {

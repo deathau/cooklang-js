@@ -3,11 +3,9 @@
     "target": "es2016",
     "module": "commonjs",
     "types": ["jest"],
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitAny": true,
-    "skipLibCheck": false,
+    "declaration": true,
     "outDir": "dist"
   },
   "include": [

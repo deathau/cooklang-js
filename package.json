@@ -1,17 +1,35 @@
 {
-  "name": "cooklang-js",
-  "version": "0.0.3",
-  "description": "CookLang parsing in TypeScript",
+  "name": "cooklang",
+  "version": "0.1.0",
+  "description": "A library for parsing CookLang in JavaScript",
+  "keywords": [
+    "cooklang"
+  ],
+  "homepage": "https://github.com/deathau/cooklang-js#readme",
+  "bugs": {
+    "url": "https://github.com/deathau/cooklang-js/issues"
+  },
+  "license": "MIT-0",
+  "author": "death_au",
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/deathau"
+    },
+    {
+      "type": "paypal",
+      "url": "https://www.paypal.me/deathau"
+    }
+  ],
   "main": "dist/cooklang.js",
-  "types": "cooklang.d.ts",
+  "types": "dist/cooklang.d.ts",
+  "repository": "github:deathau/cooklang-js",
   "scripts": {
     "build": "tsc",
     "test": "npx jest --verbose --",
     "test:watch": "npx jest jest --watch --",
     "coverage": "npx jest --collectCoverage --"
   },
-  "author": "death_au",
-  "license": "MIT",
   "devDependencies": {
     "@types/jest": "^27.0.3",
     "ts-jest": "^27.0.7",
