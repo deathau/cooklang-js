@@ -2,11 +2,11 @@
 CookLang-JS is a JavaScript library for parsing CookLang.
 
 ## Installation
-_Coming soon_
+`npm install cooklang`
 
 ## Usage
 ```javascript
-import { cooklang } from './cooklang'
+import { Recipe } from 'cooklang'
 
 const recipeString = `` // <- Your CookLang recipe
 const recipe = new Recipe(recipeString);
@@ -22,4 +22,4 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 Please make sure to update tests as appropriate.
 
 ## License
-[MIT](https://choosealicense.com/licenses/mit/)
+[MIT No Attribution](./LICENCE)
