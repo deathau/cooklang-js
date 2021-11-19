@@ -1,9 +1,11 @@
 {
-  "name": "cooklang-ts",
+  "name": "cooklang-js",
   "version": "0.0.2",
   "description": "CookLang parsing in TypeScript",
-  "main": "cooklang.ts",
+  "main": "index.js",
+  "types": "cooklang.d.ts",
   "scripts": {
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "death_au",
