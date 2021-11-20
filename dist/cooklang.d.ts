@@ -29,6 +29,7 @@ export declare class Cookware extends base {
     constructor(s?: string | string[] | any);
 }
 export declare class Timer extends base {
+    name?: string;
     amount?: string;
     unit?: string;
     seconds?: number;

@@ -6,13 +6,13 @@ const testRecipe =
 
 Crack the @eggs{3} into a blender, then add the @flour{125%g}, @milk{250%ml} and @sea salt{1%pinch}, and blitz until smooth (approx ~{30%seconds}). [- alternately, you could whisk -]
 
-Pour into a #bowl and leave to stand for ~{1/4%hour}.
+Pour into a #bowl and leave to stand for ~prep{1/4%hour}.
 
 Melt the @butter (or a drizzle of @oil if you want to be a bit healthier) in a #large non-stick frying pan{} on a medium heat, then tilt the pan so the butter coats the surface.
 
-Pour in 1 #ladle of batter and tilt again, so that the batter spreads all over the base, then cook for 1 to ~{2%minutes}, or until it starts to come away from the sides.
+Pour in 1 #ladle of batter and tilt again, so that the batter spreads all over the base, then cook for 1 to ~cook{2%minutes}, or until it starts to come away from the sides.
 
-Once golden underneath, flip the pancake over and cook for a further ~{1%minute}, or until cooked through.
+Once golden underneath, flip the pancake over and cook for a further ~cook{1%minute}, or until cooked through.
 
 Serve straightaway with your favourite topping. -- Add your favorite topping here to make sure it's included in your meal plan!`
 
@@ -61,10 +61,10 @@ test("Test parsing recipe", () => {
   // check timers
   expect(recipe.timers.length).toBe(4)
 
-  const mixTime = new Timer({ amount: "30", unit: "seconds", seconds: 30, raw: "~{30%seconds}" })
-  const standTime = new Timer({ amount: "1/4", unit: "hour", seconds: 900, raw: "~{1/4%hour}" })
-  const cookTime = new Timer({ amount: "2", unit: "minutes", seconds: 120, raw: "~{2%minutes}" })
-  const cookTime2 = new Timer({ amount: "1", unit: "minute", seconds: 60, raw: "~{1%minute}" })
+  const mixTime = new Timer({ name: undefined, amount: "30", unit: "seconds", seconds: 30, raw: "~{30%seconds}" })
+  const standTime = new Timer({ name: "prep", amount: "1/4", unit: "hour", seconds: 900, raw: "~prep{1/4%hour}" })
+  const cookTime = new Timer({ name: "cook", amount: "2", unit: "minutes", seconds: 120, raw: "~cook{2%minutes}" })
+  const cookTime2 = new Timer({ name: "cook", amount: "1", unit: "minute", seconds: 60, raw: "~cook{1%minute}" })
   expect(recipe.timers).toContainEqual<Timer>(mixTime)
   expect(recipe.timers).toContainEqual<Timer>(standTime)
   expect(recipe.timers).toContainEqual<Timer>(cookTime)
@@ -80,7 +80,7 @@ test("Test parsing recipe", () => {
   }))
 
   expect(recipe.steps[1]).toEqual<Step>(new Step({
-    raw: 'Pour into a #bowl and leave to stand for ~{1/4%hour}.',
+    raw: 'Pour into a #bowl and leave to stand for ~prep{1/4%hour}.',
     line: ['Pour into a ', bowl, ' and leave to stand for ', standTime, '.']
   }))
 
@@ -90,12 +90,12 @@ test("Test parsing recipe", () => {
   }))
 
   expect(recipe.steps[3]).toEqual<Step>(new Step({
-    raw: 'Pour in 1 #ladle of batter and tilt again, so that the batter spreads all over the base, then cook for 1 to ~{2%minutes}, or until it starts to come away from the sides.',
+    raw: 'Pour in 1 #ladle of batter and tilt again, so that the batter spreads all over the base, then cook for 1 to ~cook{2%minutes}, or until it starts to come away from the sides.',
     line: ['Pour in 1 ', ladle, ' of batter and tilt again, so that the batter spreads all over the base, then cook for 1 to ', cookTime, ', or until it starts to come away from the sides.']
   }))
 
   expect(recipe.steps[4]).toEqual<Step>(new Step({
-    raw: 'Once golden underneath, flip the pancake over and cook for a further ~{1%minute}, or until cooked through.',
+    raw: 'Once golden underneath, flip the pancake over and cook for a further ~cook{1%minute}, or until cooked through.',
     line: ['Once golden underneath, flip the pancake over and cook for a further ', cookTime2, ', or until cooked through.']
   }))
 

@@ -1,7 +1,7 @@
 const COMMENT_REGEX = /(--.*)|(\[-(.|\n)+?-\])/g
 const INGREDIENT_REGEX = /@(?:([^@#~]+?)(?:{(.*?)}|{}))|@(.+?\b)/
 const COOKWARE_REGEX = /#(?:([^@#~]+?)(?:{}))|#(.+?\b)/
-const TIMER_REGEX = /~{([0-9]+(?:\/[0-9]+)?)%(.+?)}/
+const TIMER_REGEX = /~([^@#~]*){([0-9]+(?:\/[0-9]+)?)%(.+?)}/
 const METADATA_REGEX = /^>>\s*(.*?):\s*(.*)$/
 
 // a base class containing the raw string
@@ -148,6 +148,7 @@ export class Cookware extends base {
 
 // timer
 export class Timer extends base {
+  name?: string
   amount?: string
   unit?: string
   seconds?: number
@@ -157,12 +158,14 @@ export class Timer extends base {
 
     if (s instanceof Array || typeof s === 'string') {
       const match = s instanceof Array ? s : TIMER_REGEX.exec(s)
-      if (!match || match.length != 3) throw `error parsing timer: '${s}'`
-      this.amount = match[1].trim()
-      this.unit = match[2].trim()
+      if (!match || match.length != 4) throw `error parsing timer: '${s}'`
+      this.name = match[1] ? match[1].trim() : undefined
+      this.amount = match[2] ? match[2].trim() : undefined
+      this.unit = match[3] ? match[3].trim() : undefined
       if (this.amount) this.seconds = Timer.parseTime(this.amount, this.unit)
     }
     else {
+      if ('name' in s) this.name = s.name
       if ('amount' in s) this.amount = s.amount
       if ('unit' in s) this.unit = s.unit
       if ('seconds' in s) this.seconds = s.seconds
