@@ -38,7 +38,7 @@ describe.each(Object.keys(tests))("canonical tests", (testName: string) => {
     for (let lineNo = 0; lineNo < result.steps.length; lineNo++) {
       const recipeStep:Step = recipe.steps[lineNo]
       const resultStep: any = result.steps[lineNo]
-      
+
       expect(recipeStep.line.length).toBe(resultStep.length)
       for (let i = 0; i < recipeStep.line.length; i++){
         const recipeComponent: any = recipeStep.line[i];
@@ -105,5 +105,39 @@ describe("custom tests", () => {
     expect(ingredient3.name).toBe("🥚")
     expect(ingredient3.quantity).toBe(1)
     expect(ingredient3.units).toBe("")
+  })
+
+  test("test blank lines get stripped", () => {
+    const source = "Line a\n\nLine b"
+    const recipe = new Recipe(source)
+
+    expect(recipe.steps.length).toBe(2)
+    const step1: Step = recipe.steps[0]
+    const step2: Step = recipe.steps[1]
+
+    expect(step1.line.length).toBe(1)
+    expect(typeof step1.line[0]).toBe("string")
+    expect(step1.line[0]).toEqual("Line a")
+
+    expect(step2.line.length).toBe(1)
+    expect(typeof step2.line[0]).toBe("string")
+    expect(step2.line[0]).toEqual("Line b")
+  })
+
+  test("test whitespace only lines get stripped", () => {
+    const source = "Line a\n \t \nLine b"
+    const recipe = new Recipe(source)
+
+    expect(recipe.steps.length).toBe(2)
+    const step1: Step = recipe.steps[0]
+    const step2: Step = recipe.steps[1]
+
+    expect(step1.line.length).toBe(1)
+    expect(typeof step1.line[0]).toBe("string")
+    expect(step1.line[0]).toEqual("Line a")
+
+    expect(step2.line.length).toBe(1)
+    expect(typeof step2.line[0]).toBe("string")
+    expect(step2.line[0]).toEqual("Line b")
   })
 })

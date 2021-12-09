@@ -26,18 +26,20 @@ export class Recipe extends base {
   constructor(s?: string) {
     super(s)
     s?.replace(COMMENT_REGEX, '')?.split('\n')?.forEach(line => {
-      let l = new Step(line)
-      if (l.line.length != 0) {
-        if (l.line.length == 1 && l.line[0] instanceof Metadata) {
-          this.metadata.push(l.line[0])
-        }
-        else {
-          l.line.forEach(b => {
-            if (b instanceof Ingredient) this.ingredients.push(b)
-            else if (b instanceof Cookware) this.cookware.push(b)
-            else if (b instanceof Timer) this.timers.push(b)
-          })
-          this.steps.push(l)
+      if (line.trim()) {
+        let l = new Step(line)
+        if (l.line.length != 0) {
+          if (l.line.length == 1 && l.line[0] instanceof Metadata) {
+            this.metadata.push(l.line[0])
+          }
+          else {
+            l.line.forEach(b => {
+              if (b instanceof Ingredient) this.ingredients.push(b)
+              else if (b instanceof Cookware) this.cookware.push(b)
+              else if (b instanceof Timer) this.timers.push(b)
+            })
+            this.steps.push(l)
+          }
         }
       }
     })
