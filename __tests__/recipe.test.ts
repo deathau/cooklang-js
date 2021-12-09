@@ -1,4 +1,4 @@
-import { Recipe, Step, Metadata, Ingredient, Cookware, Timer, base } from '../src/cooklang'
+import { Recipe, Step, Metadata, Ingredient, Cookware, Timer } from '../src/cooklang'
 
 let tests: any;
 
@@ -38,9 +38,7 @@ describe.each(Object.keys(tests))("canonical tests", (testName: string) => {
     for (let lineNo = 0; lineNo < result.steps.length; lineNo++) {
       const recipeStep:Step = recipe.steps[lineNo]
       const resultStep: any = result.steps[lineNo]
-      // if (recipeStep.line.length != resultStep.length) {
-      //   console.log(recipeStep.line, resultStep)
-      // }
+      
       expect(recipeStep.line.length).toBe(resultStep.length)
       for (let i = 0; i < recipeStep.line.length; i++){
         const recipeComponent: any = recipeStep.line[i];
@@ -54,8 +52,12 @@ describe.each(Object.keys(tests))("canonical tests", (testName: string) => {
             expect(recipeComponent).toBeInstanceOf(Ingredient)
             const ingredient = recipeComponent as Ingredient
             expect(ingredient.name).toBe(resultComponent.name)
-            expect(ingredient.amount).toBe(resultComponent.quantity)
-            expect(ingredient.unit).toBe(resultComponent.units)
+            // split in logic here. For non-number quantities, the string is still in the "amount" field
+            if(typeof ingredient.quantity === 'undefined' || isNaN(ingredient.quantity))
+              expect(ingredient.amount).toBe(resultComponent.quantity)
+            else
+              expect(ingredient.quantity).toBe(resultComponent.quantity)
+            expect(ingredient.units).toBe(resultComponent.units)
             break;
           case "cookware":
             expect(recipeComponent).toBeInstanceOf(Cookware)
@@ -66,8 +68,8 @@ describe.each(Object.keys(tests))("canonical tests", (testName: string) => {
             expect(recipeComponent).toBeInstanceOf(Timer)
             const timer = recipeComponent as Timer
             expect(timer.name).toBe(resultComponent.name)
-            expect(timer.amount).toBe(resultComponent.quantity)
-            expect(timer.unit).toBe(resultComponent.units)
+            expect(timer.quantity).toBe(resultComponent.quantity)
+            expect(timer.units).toBe(resultComponent.units)
             break;
           default:
             expect(resultComponent.type).toMatch(/^text|ingredient|cookware|timer$/)
@@ -76,3 +78,32 @@ describe.each(Object.keys(tests))("canonical tests", (testName: string) => {
     }
   })
 });
+
+describe("custom tests", () => {
+  test("test ingredient emoji in the middle", () => {
+    const source = "Brush with @🥛 or @🥚"
+    const recipe = new Recipe(source)
+
+    expect(recipe.steps.length).toBe(1)
+    const step: Step = recipe.steps[0]
+    
+    expect(step.line.length).toBe(4)
+    expect(typeof step.line[0]).toBe("string")
+    expect(step.line[0]).toEqual("Brush with ")
+
+    expect(step.line[1]).toBeInstanceOf(Ingredient)
+    const ingredient1 = step.line[1] as Ingredient
+    expect(ingredient1.name).toBe("🥛")
+    expect(ingredient1.quantity).toBe(1)
+    expect(ingredient1.units).toBe("")
+
+    expect(typeof step.line[2]).toBe("string")
+    expect(step.line[2]).toEqual(" or ")
+
+    expect(step.line[3]).toBeInstanceOf(Ingredient)
+    const ingredient3 = step.line[1] as Ingredient
+    expect(ingredient3.name).toBe("🥚")
+    expect(ingredient3.quantity).toBe(1)
+    expect(ingredient3.units).toBe("")
+  })
+})

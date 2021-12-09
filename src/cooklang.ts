@@ -1,7 +1,7 @@
 const COMMENT_REGEX = /(--.*)|(\[-(.|\n)+?-\])/g
-const INGREDIENT_REGEX = /@(?:([^@#~]+?)(?:{(.*?)}|{}))|@(.+?\b)/
-const COOKWARE_REGEX = /#(?:([^@#~]+?)(?:{}))|#(.+?\b)/
-const TIMER_REGEX = /~([^@#~]*){([0-9]+(?:\/[0-9]+)?)%(.+?)}/
+const INGREDIENT_REGEX = /@(?:([^@#~]+?)(?:{(.*?)}|{\s*}))|@([^@#~]+?)(?:\b|\s|$)/
+const COOKWARE_REGEX = /#(?:([^@#~]+?)(?:{\s*}))|#([^@#~]+?)(?:\b|\s|$)/
+const TIMER_REGEX = /~([^@#~]*){([0-9]+(?:[\/|\.][0-9]+)?)%(.+?)}/
 const METADATA_REGEX = /^>>\s*(.*?):\s*(.*)$/
 
 // a base class containing the raw string
@@ -68,10 +68,8 @@ export class Step extends base {
     let match: RegExpExecArray | null
     let b: base | undefined
     let line: (string | base)[] = []
-    // if the line is blank, return an empty line
-    if (s.trim().length === 0) return []
     // if it's a metadata line, return that
-    else if (match = METADATA_REGEX.exec(s)) {
+    if (match = METADATA_REGEX.exec(s)) {
       return [new Metadata(match)]
     }
     // if it has an ingredient, pull that out
@@ -109,7 +107,8 @@ export class Step extends base {
 export class Ingredient extends base {
   name?: string
   amount?: string
-  unit?: string
+  quantity?: number
+  units?: string
 
   constructor(s: string | string[] | any) {
     super(s)
@@ -118,13 +117,16 @@ export class Ingredient extends base {
       if (!match || match.length != 4) throw `error parsing ingredient: '${s}'`
       this.name = (match[1] || match[3]).trim()
       const attrs = match[2]?.split('%')
-      this.amount = attrs && attrs.length > 0 ? attrs[0].trim() : undefined
-      this.unit = attrs && attrs.length > 1 ? attrs[1].trim() : undefined
+      this.amount = attrs && attrs.length > 0 ? attrs[0].trim() : "1"
+      if(!this.amount) this.amount = "1"
+      this.quantity = this.amount ? stringToNumber(this.amount) : 1
+      this.units = attrs && attrs.length > 1 ? attrs[1].trim() : ""
     }
     else {
       if ('name' in s) this.name = s.name
       if ('amount' in s) this.amount = s.amount
-      if ('unit' in s) this.unit = s.unit
+      if ('quantity' in s) this.quantity = s.quantity
+      if ('unit' in s) this.units = s.unit
     }
   }
 }
@@ -150,7 +152,8 @@ export class Cookware extends base {
 export class Timer extends base {
   name?: string
   amount?: string
-  unit?: string
+  quantity?: number
+  units?: string
   seconds?: number
 
   constructor(s?: string | string[] | any) {
@@ -159,33 +162,23 @@ export class Timer extends base {
     if (s instanceof Array || typeof s === 'string') {
       const match = s instanceof Array ? s : TIMER_REGEX.exec(s)
       if (!match || match.length != 4) throw `error parsing timer: '${s}'`
-      this.name = match[1] ? match[1].trim() : undefined
-      this.amount = match[2] ? match[2].trim() : undefined
-      this.unit = match[3] ? match[3].trim() : undefined
-      if (this.amount) this.seconds = Timer.parseTime(this.amount, this.unit)
+      this.name = match[1] ? match[1].trim() : ""
+      this.amount = match[2] ? match[2].trim() : 0
+      this.units = match[3] ? match[3].trim() : ""
+      this.quantity = this.amount ? stringToNumber(this.amount) : 0
+      this.seconds = Timer.getSeconds(this.quantity, this.units)
     }
     else {
       if ('name' in s) this.name = s.name
       if ('amount' in s) this.amount = s.amount
-      if ('unit' in s) this.unit = s.unit
+      if ('quantity' in s) this.quantity = s.quantity
+      if ('unit' in s) this.units = s.unit
       if ('seconds' in s) this.seconds = s.seconds
     }
   }
 
-  static parseTime(s: string, unit: string = 'm') {
+  static getSeconds(amount: number, unit: string = 'm') {
     let time = 0
-    let amount: number = 0
-    if (parseFloat(s) + '' == s) amount = parseFloat(s)
-    else if (s.includes('/')) {
-      const split = s.split('/')
-      if (split.length == 2) {
-        const num = parseFloat(split[0])
-        const den = parseFloat(split[1])
-        if (num + '' == split[0] && den + '' == split[1]) {
-          amount = num / den
-        }
-      }
-    }
 
     if (amount > 0) {
       if (unit.toLowerCase().startsWith('s')) {
@@ -201,6 +194,24 @@ export class Timer extends base {
 
     return time
   }
+}
+
+function stringToNumber(s: string){
+  let amount: number = 0
+  if (parseFloat(s) + '' == s) amount = parseFloat(s)
+  else if (s.includes('/')) {
+    const split = s.split('/')
+    if (split.length == 2) {
+      const num = parseFloat(split[0].trim())
+      const den = parseFloat(split[1].trim())
+      if (num + '' == split[0].trim() && den + '' == split[1].trim()) {
+        amount = num / den
+      }
+      else amount = NaN
+    }
+  }
+  else amount = NaN
+  return amount;
 }
 
 // metadata
