@@ -131,8 +131,8 @@ class Ingredient extends base {
                 this.amount = s.amount;
             if ('quantity' in s)
                 this.quantity = s.quantity;
-            if ('unit' in s)
-                this.units = s.unit;
+            if ('units' in s)
+                this.units = s.units;
         }
     }
 }
@@ -175,8 +175,8 @@ class Timer extends base {
                 this.amount = s.amount;
             if ('quantity' in s)
                 this.quantity = s.quantity;
-            if ('unit' in s)
-                this.units = s.unit;
+            if ('units' in s)
+                this.units = s.units;
             if ('seconds' in s)
                 this.seconds = s.seconds;
         }
