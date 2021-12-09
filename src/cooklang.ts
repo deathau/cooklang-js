@@ -128,7 +128,7 @@ export class Ingredient extends base {
       if ('name' in s) this.name = s.name
       if ('amount' in s) this.amount = s.amount
       if ('quantity' in s) this.quantity = s.quantity
-      if ('unit' in s) this.units = s.unit
+      if ('units' in s) this.units = s.units
     }
   }
 }
@@ -174,7 +174,7 @@ export class Timer extends base {
       if ('name' in s) this.name = s.name
       if ('amount' in s) this.amount = s.amount
       if ('quantity' in s) this.quantity = s.quantity
-      if ('unit' in s) this.units = s.unit
+      if ('units' in s) this.units = s.units
       if ('seconds' in s) this.seconds = s.seconds
     }
   }

@@ -201,3 +201,79 @@ describe("custom tests", () => {
     expect(step.line[0]).toEqual("This is not # cookware")
   })
 })
+
+describe("copy constructors", () => {
+  test("test Ingredient copy constructor", () => {
+    const ingredient = new Ingredient("@honey{5%tsp}")
+    ingredient.amount = "5"
+    ingredient.name = "honey"
+    ingredient.quantity = 5
+    ingredient.raw = "@honey{5%tsp}"
+    ingredient.units = "tsp"
+
+    const copy = new Ingredient(ingredient)
+
+    expect(copy).not.toBe(ingredient)
+    expect(copy).toEqual(ingredient)
+  })
+
+  test("test Cookware copy constructor", () => {
+    const cookware = new Cookware("#pot")
+    cookware.name = "pot"
+    cookware.raw = "#pot"
+
+    const copy = new Cookware(cookware)
+
+    expect(copy).not.toBe(cookware)
+    expect(copy).toEqual(cookware)
+  })
+
+  test("test Timer copy constructor", () => {
+    const timer = new Timer("~boil{5%mins}")
+    timer.amount = "5"
+    timer.name = "boil"
+    timer.quantity = 5
+    timer.raw = "~boil{5%mins}"
+    timer.units = "mins"
+    timer.seconds = 300
+
+    const copy = new Timer(timer)
+
+    expect(copy).not.toBe(timer)
+    expect(copy).toEqual(timer)
+  })
+
+  test("test Metadata copy constructor", () => {
+    const metadata = new Metadata(">> url: https://example.com")
+    metadata.key = "url"
+    metadata.value = "https://example.com"
+    metadata.raw = ">> url: https://example.com"
+
+    const copy = new Metadata(metadata)
+
+    expect(copy).not.toBe(metadata)
+    expect(copy).toEqual(metadata)
+  })
+
+  test("test Step copy constructor", () => {
+    const step = new Step("raw")
+    step.image = "image"
+    step.line = ["raw"]
+
+    const copy = new Step(step)
+
+    expect(copy).not.toBe(step)
+    expect(copy).toEqual(step)
+  })
+})
+
+describe("other functionality", () => {
+  test("test total time for timers", () => {
+    const source = "~timer1{30%Seconds}\n~timer1{30%minutes}\n~timer1{1/2%Hour}"
+    const recipe = new Recipe(source)
+
+    // 30s + 30m + 0.5h
+    // 30 + 1800 + 1800 = 3630
+    expect(recipe.calculateTotalTime()).toBe(3630)
+  })
+})
