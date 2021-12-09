@@ -101,10 +101,33 @@ describe("custom tests", () => {
     expect(step.line[2]).toEqual(" or ")
 
     expect(step.line[3]).toBeInstanceOf(Ingredient)
-    const ingredient3 = step.line[1] as Ingredient
+    const ingredient3 = step.line[3] as Ingredient
     expect(ingredient3.name).toBe("🥚")
     expect(ingredient3.quantity).toBe(1)
     expect(ingredient3.units).toBe("")
+  })
+
+  test("test cookware emoji in the middle", () => {
+    const source = "Serve in a #🥤 or a #🥣"
+    const recipe = new Recipe(source)
+
+    expect(recipe.steps.length).toBe(1)
+    const step: Step = recipe.steps[0]
+
+    expect(step.line.length).toBe(4)
+    expect(typeof step.line[0]).toBe("string")
+    expect(step.line[0]).toEqual("Serve in a ")
+
+    expect(step.line[1]).toBeInstanceOf(Cookware)
+    const cookware1 = step.line[1] as Cookware
+    expect(cookware1.name).toBe("🥤")
+
+    expect(typeof step.line[2]).toBe("string")
+    expect(step.line[2]).toEqual(" or a ")
+
+    expect(step.line[3]).toBeInstanceOf(Cookware)
+    const cookware3 = step.line[3] as Cookware
+    expect(cookware3.name).toBe("🥣")
   })
 
   test("test blank lines get stripped", () => {
@@ -139,5 +162,42 @@ describe("custom tests", () => {
     expect(step2.line.length).toBe(1)
     expect(typeof step2.line[0]).toBe("string")
     expect(step2.line[0]).toEqual("Line b")
+  })
+
+  test("test lone @ should not be ingredient", () => {
+    const source = "This is not @ an ingredient"
+    const recipe = new Recipe(source)
+
+    expect(recipe.steps.length).toBe(1)
+    const step: Step = recipe.steps[0]
+
+    expect(step.line.length).toBe(1)
+    expect(typeof step.line[0]).toBe("string")
+    expect(step.line[0]).toEqual("This is not @ an ingredient")
+  })
+
+  test("test @ in middle should not be ingredient", () => {
+    const source = "ask me@example.com for more info"
+    const recipe = new Recipe(source)
+
+    expect(recipe.steps.length).toBe(1)
+    const step: Step = recipe.steps[0]
+
+    expect(step.line.length).toBe(1)
+    expect(typeof step.line[0]).toBe("string")
+    expect(step.line[0]).toEqual("ask me@example.com for more info")
+  })
+
+  // test("lone # should not be cookware")
+  test("test lone # should not be cookware", () => {
+    const source = "This is not # cookware"
+    const recipe = new Recipe(source)
+
+    expect(recipe.steps.length).toBe(1)
+    const step: Step = recipe.steps[0]
+
+    expect(step.line.length).toBe(1)
+    expect(typeof step.line[0]).toBe("string")
+    expect(step.line[0]).toEqual("This is not # cookware")
   })
 })

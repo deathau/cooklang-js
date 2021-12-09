@@ -21,7 +21,8 @@ export declare class Step extends base {
 export declare class Ingredient extends base {
     name?: string;
     amount?: string;
-    unit?: string;
+    quantity?: number;
+    units?: string;
     constructor(s: string | string[] | any);
 }
 export declare class Cookware extends base {
@@ -31,10 +32,11 @@ export declare class Cookware extends base {
 export declare class Timer extends base {
     name?: string;
     amount?: string;
-    unit?: string;
+    quantity?: number;
+    units?: string;
     seconds?: number;
     constructor(s?: string | string[] | any);
-    static parseTime(s: string, unit?: string): number;
+    static getSeconds(amount: number, unit?: string): number;
 }
 export declare class Metadata extends base {
     key?: string;

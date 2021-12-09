@@ -1,6 +1,6 @@
 const COMMENT_REGEX = /(--.*)|(\[-(.|\n)+?-\])/g
-const INGREDIENT_REGEX = /@(?:([^@#~]+?)(?:{(.*?)}|{\s*}))|@([^@#~]+?)(?:\b|\s|$)/
-const COOKWARE_REGEX = /#(?:([^@#~]+?)(?:{\s*}))|#([^@#~]+?)(?:\b|\s|$)/
+const INGREDIENT_REGEX = /@(?:([^@#~]+?)(?:{(.*?)}|{\s*}))|@((?:[^@#~\s])+)/
+const COOKWARE_REGEX = /#(?:([^@#~]+?)(?:{\s*}))|#((?:[^@#~\s])+)/
 const TIMER_REGEX = /~([^@#~]*){([0-9]+(?:[\/|\.][0-9]+)?)%(.+?)}/
 const METADATA_REGEX = /^>>\s*(.*?):\s*(.*)$/
 

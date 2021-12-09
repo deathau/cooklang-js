@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Metadata = exports.Timer = exports.Cookware = exports.Ingredient = exports.Step = exports.Recipe = void 0;
 const COMMENT_REGEX = /(--.*)|(\[-(.|\n)+?-\])/g;
-const INGREDIENT_REGEX = /@(?:([^@#~]+?)(?:{(.*?)}|{}))|@(.+?\b)/;
-const COOKWARE_REGEX = /#(?:([^@#~]+?)(?:{}))|#(.+?\b)/;
-const TIMER_REGEX = /~([^@#~]*){([0-9]+(?:\/[0-9]+)?)%(.+?)}/;
+const INGREDIENT_REGEX = /@(?:([^@#~]+?)(?:{(.*?)}|{\s*}))|@((?:[^@#~\s])+)/;
+const COOKWARE_REGEX = /#(?:([^@#~]+?)(?:{\s*}))|#((?:[^@#~\s])+)/;
+const TIMER_REGEX = /~([^@#~]*){([0-9]+(?:[\/|\.][0-9]+)?)%(.+?)}/;
 const METADATA_REGEX = /^>>\s*(.*?):\s*(.*)$/;
 // a base class containing the raw string
 class base {
@@ -27,21 +27,23 @@ class Recipe extends base {
         this.timers = [];
         this.steps = [];
         (_b = (_a = s === null || s === void 0 ? void 0 : s.replace(COMMENT_REGEX, '')) === null || _a === void 0 ? void 0 : _a.split('\n')) === null || _b === void 0 ? void 0 : _b.forEach(line => {
-            let l = new Step(line);
-            if (l.line.length != 0) {
-                if (l.line.length == 1 && l.line[0] instanceof Metadata) {
-                    this.metadata.push(l.line[0]);
-                }
-                else {
-                    l.line.forEach(b => {
-                        if (b instanceof Ingredient)
-                            this.ingredients.push(b);
-                        else if (b instanceof Cookware)
-                            this.cookware.push(b);
-                        else if (b instanceof Timer)
-                            this.timers.push(b);
-                    });
-                    this.steps.push(l);
+            if (line.trim()) {
+                let l = new Step(line);
+                if (l.line.length != 0) {
+                    if (l.line.length == 1 && l.line[0] instanceof Metadata) {
+                        this.metadata.push(l.line[0]);
+                    }
+                    else {
+                        l.line.forEach(b => {
+                            if (b instanceof Ingredient)
+                                this.ingredients.push(b);
+                            else if (b instanceof Cookware)
+                                this.cookware.push(b);
+                            else if (b instanceof Timer)
+                                this.timers.push(b);
+                        });
+                        this.steps.push(l);
+                    }
                 }
             }
         });
@@ -70,11 +72,8 @@ class Step extends base {
         let match;
         let b;
         let line = [];
-        // if the line is blank, return an empty line
-        if (s.trim().length === 0)
-            return [];
         // if it's a metadata line, return that
-        else if (match = METADATA_REGEX.exec(s)) {
+        if (match = METADATA_REGEX.exec(s)) {
             return [new Metadata(match)];
         }
         // if it has an ingredient, pull that out
@@ -119,16 +118,21 @@ class Ingredient extends base {
                 throw `error parsing ingredient: '${s}'`;
             this.name = (match[1] || match[3]).trim();
             const attrs = (_a = match[2]) === null || _a === void 0 ? void 0 : _a.split('%');
-            this.amount = attrs && attrs.length > 0 ? attrs[0].trim() : undefined;
-            this.unit = attrs && attrs.length > 1 ? attrs[1].trim() : undefined;
+            this.amount = attrs && attrs.length > 0 ? attrs[0].trim() : "1";
+            if (!this.amount)
+                this.amount = "1";
+            this.quantity = this.amount ? stringToNumber(this.amount) : 1;
+            this.units = attrs && attrs.length > 1 ? attrs[1].trim() : "";
         }
         else {
             if ('name' in s)
                 this.name = s.name;
             if ('amount' in s)
                 this.amount = s.amount;
+            if ('quantity' in s)
+                this.quantity = s.quantity;
             if ('unit' in s)
-                this.unit = s.unit;
+                this.units = s.unit;
         }
     }
 }
@@ -158,38 +162,27 @@ class Timer extends base {
             const match = s instanceof Array ? s : TIMER_REGEX.exec(s);
             if (!match || match.length != 4)
                 throw `error parsing timer: '${s}'`;
-            this.name = match[1] ? match[1].trim() : undefined;
-            this.amount = match[2] ? match[2].trim() : undefined;
-            this.unit = match[3] ? match[3].trim() : undefined;
-            if (this.amount)
-                this.seconds = Timer.parseTime(this.amount, this.unit);
+            this.name = match[1] ? match[1].trim() : "";
+            this.amount = match[2] ? match[2].trim() : 0;
+            this.units = match[3] ? match[3].trim() : "";
+            this.quantity = this.amount ? stringToNumber(this.amount) : 0;
+            this.seconds = Timer.getSeconds(this.quantity, this.units);
         }
         else {
             if ('name' in s)
                 this.name = s.name;
             if ('amount' in s)
                 this.amount = s.amount;
+            if ('quantity' in s)
+                this.quantity = s.quantity;
             if ('unit' in s)
-                this.unit = s.unit;
+                this.units = s.unit;
             if ('seconds' in s)
                 this.seconds = s.seconds;
         }
     }
-    static parseTime(s, unit = 'm') {
+    static getSeconds(amount, unit = 'm') {
         let time = 0;
-        let amount = 0;
-        if (parseFloat(s) + '' == s)
-            amount = parseFloat(s);
-        else if (s.includes('/')) {
-            const split = s.split('/');
-            if (split.length == 2) {
-                const num = parseFloat(split[0]);
-                const den = parseFloat(split[1]);
-                if (num + '' == split[0] && den + '' == split[1]) {
-                    amount = num / den;
-                }
-            }
-        }
         if (amount > 0) {
             if (unit.toLowerCase().startsWith('s')) {
                 time = amount;
@@ -205,6 +198,26 @@ class Timer extends base {
     }
 }
 exports.Timer = Timer;
+function stringToNumber(s) {
+    let amount = 0;
+    if (parseFloat(s) + '' == s)
+        amount = parseFloat(s);
+    else if (s.includes('/')) {
+        const split = s.split('/');
+        if (split.length == 2) {
+            const num = parseFloat(split[0].trim());
+            const den = parseFloat(split[1].trim());
+            if (num + '' == split[0].trim() && den + '' == split[1].trim()) {
+                amount = num / den;
+            }
+            else
+                amount = NaN;
+        }
+    }
+    else
+        amount = NaN;
+    return amount;
+}
 // metadata
 class Metadata extends base {
     constructor(s) {
