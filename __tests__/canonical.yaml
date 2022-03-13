@@ -129,7 +129,7 @@ tests:
           - type: cookware
             name: "7-inch nonstick frying pan"
             quantity: 1
-            amount: ""
+            amount: "1"
       metadata: []
 
 
