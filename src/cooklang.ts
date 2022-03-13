@@ -1,6 +1,6 @@
 const COMMENT_REGEX = /(--.*)|(\[-(.|\n)+?-\])/g
 const INGREDIENT_REGEX = /@(?:([^@#~]+?)(?:{(.*?)}|{\s*}))|@((?:[^@#~\s])+)/
-const COOKWARE_REGEX = /#(?:([^@#~]+?)(?:{\s*}))|#((?:[^@#~\s])+)/
+const COOKWARE_REGEX = /#(?:([^@#~]+?)(?:{(.*?)}|{\s*}))|#((?:[^@#~\s])+)/
 const TIMER_REGEX = /~([^@#~]*){([0-9]+(?:[\/|\.][0-9]+)?)%(.+?)}/
 const METADATA_REGEX = /^>>\s*(.*?):\s*(.*)$/
 
@@ -136,16 +136,24 @@ export class Ingredient extends base {
 // cookware
 export class Cookware extends base {
   name?: string
+  amount?: string
+  quantity?: number
 
   constructor(s?: string | string[] | any) {
     super(s)
     if (s instanceof Array || typeof s === 'string') {
       const match = s instanceof Array ? s : COOKWARE_REGEX.exec(s)
-      if (!match || match.length != 3) throw `error parsing cookware: '${s}'`
-      this.name = (match[1] || match[2]).trim()
+      if (!match || match.length != 4) throw `error parsing ingredient: '${s}'`
+      this.name = (match[1] || match[3]).trim()
+      const attrs = match[2]
+      this.amount = attrs && attrs.length > 0 ? attrs[0].trim() : "1"
+      if(!this.amount) this.amount = "1"
+      this.quantity = this.amount ? stringToNumber(this.amount) : 1
     }
     else {
       if ('name' in s) this.name = s.name
+      if ('amount' in s) this.amount = s.amount
+      if ('quantity' in s) this.quantity = s.quantity
     }
   }
 }

@@ -113,7 +113,8 @@ tests:
             value: "Fry in "
           - type: cookware
             name: "frying pan"
-            quantity: ""
+            quantity: 1
+            amount: "1"
       metadata: []
 
 
@@ -127,7 +128,8 @@ tests:
             value: "Fry in "
           - type: cookware
             name: "7-inch nonstick frying pan"
-            quantity: ""
+            quantity: 1
+            amount: ""
       metadata: []
 
 
@@ -141,7 +143,8 @@ tests:
             value: "Fry in "
           - type: cookware
             name: "frying pan"
-            quantity: ""
+            quantity: 1
+            amount: "1"
       metadata: []
 
 
@@ -155,11 +158,23 @@ tests:
             value: "Simmer in "
           - type: cookware
             name: "pan"
-            quantity: ""
+            quantity: 1
+            amount: "1"
           - type: text
             value: " for some time"
       metadata: []
 
+  testEquipmentQuantity:
+    source: |
+      #frying pan{2}
+    result:
+      steps:
+        -
+          - type: cookware
+            name: "frying pan"
+            quantity: 2
+            amount: "2"
+      metadata: []
 
   testFractions:
     source: |
@@ -172,7 +187,6 @@ tests:
             quantity: 0.5
             units: "cup"
       metadata: []
-
 
   testFractionsInDirections:
     source: |

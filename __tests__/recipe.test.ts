@@ -63,6 +63,11 @@ describe.each(Object.keys(tests))("canonical tests", (testName: string) => {
             expect(recipeComponent).toBeInstanceOf(Cookware)
             const cookware = recipeComponent as Cookware
             expect(cookware.name).toBe(resultComponent.name)
+            // split in logic here. For non-number quantities, the string is still in the "amount" field
+            if(typeof cookware.quantity === 'undefined' || isNaN(cookware.quantity))
+              expect(cookware.amount).toBe(resultComponent.quantity)
+            else
+              expect(cookware.quantity).toBe(resultComponent.quantity)
             break;
           case "timer":
             expect(recipeComponent).toBeInstanceOf(Timer)
