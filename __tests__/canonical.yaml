@@ -1,4 +1,4 @@
-version: 1
+version: 5
 tests:
   testBasicDirection:
     source: |
@@ -8,7 +8,7 @@ tests:
         -
           - type: text
             value: "Add a bit of chilli"
-      metadata: []
+      metadata: {}
 
 
   testComments:
@@ -16,7 +16,7 @@ tests:
       -- testing comments
     result:
       steps: []
-      metadata: []
+      metadata: {}
 
 
   testCommentsAfterIngredients:
@@ -35,7 +35,7 @@ tests:
         -
           - type: text
             value: "and some text"
-      metadata: []
+      metadata: {}
 
 
   testCommentsWithIngredients:
@@ -49,7 +49,7 @@ tests:
             name: "thyme"
             quantity: 2
             units: "springs"
-      metadata: []
+      metadata: {}
 
 
   testDirectionsWithDegrees:
@@ -60,7 +60,7 @@ tests:
         -
           - type: text
             value: "Heat oven up to 200°C"
-      metadata: []
+      metadata: {}
 
 
   testDirectionsWithNumbers:
@@ -71,7 +71,7 @@ tests:
         -
           - type: text
             value: "Heat 5L of water"
-      metadata: []
+      metadata: {}
 
 
   testDirectionWithIngrident:
@@ -100,7 +100,7 @@ tests:
             units: "l"
           - type: text
             value: "."
-      metadata: []
+      metadata: {}
 
 
   testEquipmentMultipleWords:
@@ -114,8 +114,7 @@ tests:
           - type: cookware
             name: "frying pan"
             quantity: 1
-            amount: "1"
-      metadata: []
+      metadata: {}
 
 
   testEquipmentMultipleWordsWithLeadingNumber:
@@ -129,8 +128,7 @@ tests:
           - type: cookware
             name: "7-inch nonstick frying pan"
             quantity: 1
-            amount: "1"
-      metadata: []
+      metadata: {}
 
 
   testEquipmentMultipleWordsWithSpaces:
@@ -144,8 +142,7 @@ tests:
           - type: cookware
             name: "frying pan"
             quantity: 1
-            amount: "1"
-      metadata: []
+      metadata: {}
 
 
   testEquipmentOneWord:
@@ -159,10 +156,9 @@ tests:
           - type: cookware
             name: "pan"
             quantity: 1
-            amount: "1"
           - type: text
             value: " for some time"
-      metadata: []
+      metadata: {}
 
   testEquipmentQuantity:
     source: |
@@ -173,8 +169,29 @@ tests:
           - type: cookware
             name: "frying pan"
             quantity: 2
-            amount: "2"
-      metadata: []
+      metadata: {}
+
+  testEquipmentQuantityOneWord:
+    source: |
+      #frying pan{three}
+    result:
+      steps:
+        -
+          - type: cookware
+            name: "frying pan"
+            quantity: three
+      metadata: {}
+
+  testEquipmentQuantityMultipleWords:
+    source: |
+      #frying pan{two small}
+    result:
+      steps:
+        -
+          - type: cookware
+            name: "frying pan"
+            quantity: two small
+      metadata: {}
 
   testFractions:
     source: |
@@ -186,7 +203,8 @@ tests:
             name: "milk"
             quantity: 0.5
             units: "cup"
-      metadata: []
+      metadata: {}
+
 
   testFractionsInDirections:
     source: |
@@ -196,7 +214,7 @@ tests:
         -
           - type: text
             value: "knife cut about every 1/2 inches"
-      metadata: []
+      metadata: {}
 
 
   testFractionsLike:
@@ -209,7 +227,7 @@ tests:
             name: "milk"
             quantity: 01/2
             units: "cup"
-      metadata: []
+      metadata: {}
 
 
   testFractionsWithSpaces:
@@ -222,7 +240,7 @@ tests:
             name: "milk"
             quantity: 0.5
             units: "cup"
-      metadata: []
+      metadata: {}
 
 
   testIngredientMultipleWordsWithLeadingNumber:
@@ -235,9 +253,9 @@ tests:
             value: "Top with "
           - type: ingredient
             name: "1000 island dressing"
-            quantity: 1
+            quantity: "some"
             units: ""
-      metadata: []
+      metadata: {}
 
 
   testIngredientWithEmoji:
@@ -250,9 +268,9 @@ tests:
             value: "Add some "
           - type: ingredient
             name: "🧂"
-            quantity: 1
+            quantity: "some"
             units: ""
-      metadata: []
+      metadata: {}
 
 
   testIngridentExplicitUnits:
@@ -265,7 +283,7 @@ tests:
             name: "chilli"
             quantity: 3
             units: "items"
-      metadata: []
+      metadata: {}
 
 
   testIngridentExplicitUnitsWithSpaces:
@@ -278,20 +296,7 @@ tests:
             name: "chilli"
             quantity: 3
             units: "items"
-      metadata: []
-
-
-  testIngridentImplicitQuantity:
-    source: |
-      @chilli{%items}
-    result:
-      steps:
-        -
-          - type: ingredient
-            name: "chilli"
-            quantity: 1
-            units: "items"
-      metadata: []
+      metadata: {}
 
 
   testIngridentImplicitUnits:
@@ -304,7 +309,7 @@ tests:
             name: "chilli"
             quantity: 3
             units: ""
-      metadata: []
+      metadata: {}
 
 
   testIngridentNoUnits:
@@ -315,9 +320,9 @@ tests:
         -
           - type: ingredient
             name: "chilli"
-            quantity: 1
+            quantity: "some"
             units: ""
-      metadata: []
+      metadata: {}
 
 
   testIngridentNoUnitsNotOnlyString:
@@ -328,9 +333,9 @@ tests:
         -
           - type: ingredient
             name: "5peppers"
-            quantity: 1
+            quantity: "some"
             units: ""
-      metadata: []
+      metadata: {}
 
 
   testIngridentWithNumbers:
@@ -343,7 +348,7 @@ tests:
             name: "tipo 00 flour"
             quantity: 250
             units: "g"
-      metadata: []
+      metadata: {}
 
 
   testIngridentWithoutStopper:
@@ -354,11 +359,11 @@ tests:
         -
           - type: ingredient
             name: "chilli"
-            quantity: 1
+            quantity: "some"
             units: ""
           - type: text
             value: " cut into pieces"
-      metadata: []
+      metadata: {}
 
 
   testMetadata:
@@ -378,7 +383,7 @@ tests:
         -
           - type: text
             value: "hello >> sourced: babooshka"
-      metadata: []
+      metadata: {}
 
 
   testMetadataMultiwordKey:
@@ -412,7 +417,7 @@ tests:
         -
           - type: text
             value: "Add a bit of hummus"
-      metadata: []
+      metadata: {}
 
 
   testMultipleLines:
@@ -436,7 +441,7 @@ tests:
             name: "hot chilli"
             quantity: 3
             units: ""
-      metadata: []
+      metadata: {}
 
 
   testMultiWordIngridentNoAmount:
@@ -447,9 +452,9 @@ tests:
         -
           - type: ingredient
             name: "hot chilli"
-            quantity: 1
+            quantity: "some"
             units: ""
-      metadata: []
+      metadata: {}
 
 
   testMutipleIngridentsWithoutStopper:
@@ -460,15 +465,15 @@ tests:
         -
           - type: ingredient
             name: "chilli"
-            quantity: 1
+            quantity: "some"
             units: ""
           - type: text
             value: " cut into pieces and "
           - type: ingredient
             name: "garlic"
-            quantity: 1
+            quantity: "some"
             units: ""
-      metadata: []
+      metadata: {}
 
 
   testQuantityAsText:
@@ -481,7 +486,7 @@ tests:
             name: "thyme"
             quantity: few
             units: "springs"
-      metadata: []
+      metadata: {}
 
 
   testQuantityDigitalString:
@@ -494,7 +499,7 @@ tests:
             name: "water"
             quantity: 7 k
             units: ""
-      metadata: []
+      metadata: {}
 
 
   testServings:
@@ -514,7 +519,7 @@ tests:
         -
           - type: text
             value: "Preheat the oven to 200℃/Fan 180°C."
-      metadata: []
+      metadata: {}
 
 
   testTimerDecimal:
@@ -529,7 +534,7 @@ tests:
             quantity: 1.5
             units: "minutes"
             name: ""
-      metadata: []
+      metadata: {}
 
 
   testTimerFractional:
@@ -544,7 +549,7 @@ tests:
             quantity: 0.5
             units: "hour"
             name: ""
-      metadata: []
+      metadata: {}
 
 
   testTimerInteger:
@@ -559,7 +564,7 @@ tests:
             quantity: 10
             units: "minutes"
             name: ""
-      metadata: []
+      metadata: {}
 
 
   testTimerWithName:
@@ -574,6 +579,6 @@ tests:
             quantity: 42
             units: "minutes"
             name: "potato"
-      metadata: []
+      metadata: {}
 
 # TODO add common syntax errors
