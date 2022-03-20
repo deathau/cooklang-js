@@ -27,6 +27,8 @@ export declare class Ingredient extends base {
 }
 export declare class Cookware extends base {
     name?: string;
+    amount?: string;
+    quantity?: number;
     constructor(s?: string | string[] | any);
 }
 export declare class Timer extends base {
